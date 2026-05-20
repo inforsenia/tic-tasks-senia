@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# This script is licensed under GPLv3 or higher
+# Authors:
+#    - Angel Berlanas Vicente <aberlanas@fsfe.org>
+#    - M.Angel Crujera <me@crujera.net>
+
+
+echo ""
+echo " * [ Senia - Internet, ¡Ven a mi! ] "
+echo ""
+
+if [ $(id -u) -ne 0 ]; then
+	echo " * ERROR : Este software ha de ejecutarse usando sudo"
+	echo ""
+	echo " sudo $(basename $0) "
+	exit 1
+fi
+
+
+
+echo ""
+echo " - Para proteger que el alumnado no pueda poner " 
+echo "   Internet, protegimos la accion con una contrasenya"
+echo "   que solicitamos ahora para activar Internet de nuevo"
+echo ""
+sleep 0.5
+echo -n " -> Introduce la contrasenya: "
+read -s PASSWIFI
+echo ""
+FILEPASS=$(cat /tmp/senia-internet-lock.gpg) 
+SHAPASS=$(echo "$PASSWIFI"| sha256sum )
+
+echo " * Verificando credenciales "
+sleep 0.5
+
+if [ "${FILEPASS}" = "${SHAPASS}" ]; then
+	echo " ..."
+	sleep 0.5
+	echo " ... ¡Contrasenya aceptada!"
+	iptables -F
+	echo " * Internet ha sido restablecida "
+else
+	echo " -- Te has equivocado -- "
+fi	
+
+exit 0
