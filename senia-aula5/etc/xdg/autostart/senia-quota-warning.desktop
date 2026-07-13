@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Senia Quota Warning
+Comment=Senia Quota Warning
+Exec=/usr/bin/senia-quota-warning
+Terminal=false
+Type=Application
+Categories=Utility;
+GenericName=Senia Quota Warning

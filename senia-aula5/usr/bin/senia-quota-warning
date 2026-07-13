@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# This script is licensed under GPLv3 or higher
+
+# Version 20260613.1
+
+
+#sudo setquota -u a.berlanasvicente 80000000 100000000 0 0 /home
+
+
+
+
+# Test de inicio por primera vez
+
+rd=0
+quota -s | head -n 1 | grep -q "none" || rd=1
+
+if [ $rd -eq 0 ]; then
+	zenity --info --text=" AVISO: $USER, SE HA DETECTADO UN PRIMER INICIO DE SESION. SE REINICIARA EL EQUIPO, KEEP CALM AND NO AVISES AL PROFESORADO"
+	reboot
+fi
+
+
+
+NUMNOT=1
+
+while true; do
+	rc=0
+	quota -s| grep -v Disk |grep -v "Filesystem" | tr -s " " | cut -d " " -f3| grep -q "\*" || rc=1
+
+	if [ $rc -eq 0 ]; then
+
+		notify-send -u critical -i /usr/share/icons/Adwaita/scalable/status/software-update-urgent-symbolic.svg "Cuota de Disco Crítica!" "Revisa tu espacio de almacenamiento $USER, has superado la cuota de disco. Aviso número $NUMNOT"
+		let NUMNOT=$NUMNOT+1
+
+	fi
+	# Esperamos 5 minutos
+	sleep 300
+done
+

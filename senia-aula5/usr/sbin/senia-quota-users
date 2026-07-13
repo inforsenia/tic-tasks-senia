@@ -1,0 +1,50 @@
+#!/bin/bash
+
+
+logger -t "senia-quota-users" " Obteniendo usuarios que no se borran"
+
+LIST_USERS=$(mktemp /tmp/senia-quota-users.XXXXX)
+last -w -s -30days| grep -v reboot| grep -v wtmp| cut -d " " -f1 | sort -u| grep -v "^$" > $LIST_USERS
+
+
+logger -t "senia-quota-users" " Testing quota is installed"
+if [ ! -x /usr/bin/quota ]; then
+	logger -t "senia-quota-users" " Quota must be installed"
+	exit 0
+fi
+
+
+
+logger -t "senia-quota-users" " Testing Quota files "
+if [ ! -e /home/aquota.user -o ! -e /home/aquota.group ]; then
+	logger -t "senia-quota-users" " AQUOTA File not found...creating it!"
+	quotacheck -cugm /home
+	quotaon /home
+fi
+
+
+
+for usu in $(ls /home/ -1| grep -v "found"); do 
+
+	if [ -d /home/$usu ]; then
+		rc=0
+		cat $LIST_USERS| grep -q $usu || rc=1
+
+		if [ $rc -eq 1 ]; then
+
+			logger -t "senia-quota-users" " * Usuario $usu ha superado el periodo de no uso - se borra"
+			rm -rf  /home/$usu
+		else
+			logger -t "senia-quota-users" " Aplicando a $usu "
+			#setquota -u $usu SOFT 80G HARD 100G 0 0 /home/ 
+			setquota -u $usu 80000000 100000000 0 0 /home/ 
+		fi	
+	else
+		logger -t "senia-quota-users" " $usu es un fichero, nada que hacer"
+	fi
+
+
+
+done
+
+
