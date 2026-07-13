@@ -7,9 +7,6 @@
 
 #sudo setquota -u a.berlanasvicente 80000000 100000000 0 0 /home
 
-
-
-
 # Test de inicio por primera vez
 
 rd=0
@@ -22,7 +19,22 @@ fi
 
 
 
+#### DIEGO: Mensajes aleatorios
+listaMensajes=(
+'Cuota de disco crítica. Revisa tu espacio de almacenamiento, $USER. Has superado la cuota de disco. Aviso número $NUMNOT.'
+'Tu cuota de almacenamiento sigue excedida, $USER. Aviso número $NUMNOT. Elimina archivos innecesarios cuanto antes.'
+'Acción requerida. $USER, continúas por encima del límite permitido. Aviso número $NUMNOT. Libera espacio para evitar problemas.'
+'Situación crítica. $USER, tu cuota de disco sigue superada. Aviso número $NUMNOT. Borra archivos hoy mismo.'
+'Último aviso. $USER, este es el aviso número $NUMNOT. Si no reduces el espacio utilizado, podrán aplicarse restricciones.'
+'Continúas ignorando los avisos, $USER. Aviso número $NUMNOT. Libera espacio inmediatamente para evitar limitaciones en el servicio.'
+'El exceso de almacenamiento persiste. $USER, aviso número $NUMNOT. Tu cuenta podrá quedar restringida hasta que reduzcas el uso del disco.'
+'Has alcanzado el nivel máximo de avisos, $USER. Aviso número $NUMNOT. Elimina archivos ahora o se aplicarán las medidas previstas por la administración.'
+)
+
+mensajeSeleccionado="${listaMensajes[$((RANDOM % ${#listaMensajes[@]}))]}"
+
 NUMNOT=1
+tiempoAviso=300
 
 while true; do
 	rc=0
@@ -30,11 +42,20 @@ while true; do
 
 	if [ $rc -eq 0 ]; then
 
-		notify-send -u critical -i /usr/share/icons/Adwaita/scalable/status/software-update-urgent-symbolic.svg "Cuota de Disco Crítica!" "Revisa tu espacio de almacenamiento $USER, has superado la cuota de disco. Aviso número $NUMNOT"
+		msgAviso="Cuota de Disco Crítica!" "Revisa tu espacio de almacenamiento $USER, has superado la cuota de disco. Aviso número $NUMNOT"
+		if [ $NUMNOT -ne 1 ]; then
+			msgAviso=$msgAviso"\n "$mensajeSeleccionado
+		elif [ $NUMNOT -ne 10 ]; then
+			find /home/$USER -type f -iname "*.iso" -delete
+			msgAviso=$msgAviso"\n "$mensajeSeleccionado
+		fi
+
+		notify-send -u critical -i /usr/share/icons/Adwaita/scalable/status/software-update-urgent-symbolic.svg $msgAviso
+
 		let NUMNOT=$NUMNOT+1
 
 	fi
 	# Esperamos 5 minutos
-	sleep 300
+	sleep $tiempoAviso
 done
 
