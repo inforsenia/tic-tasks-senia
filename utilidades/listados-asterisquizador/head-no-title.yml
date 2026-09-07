@@ -1,10 +1,16 @@
 ---
-title: Listado Alumnado 2024 - 2025
+title: Listado Alumnado 2026 - 2027
 header-includes: |
 lang: es-ES
-page-background: "./rsrc/background-senia.pdf"
+page-background: "../rsrc/background-senia.pdf"
 page-background-opacity: 1
 ---
+
+\maketitle
+\tableofcontents
+
+\newpage
+
 
 
 

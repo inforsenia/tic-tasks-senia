@@ -1,16 +1,16 @@
 ---
-title: Listado Alumnado 2024 - 2025
+title: Listado Alumnado 2026 - 2027
 subtitle: IES La Sénia
 author: Itaca
 header-includes: |
 lang: es-ES
 titlepage: false,
-page-background: "./rsrc/background-senia.pdf"
+page-background: "../rsrc/background-senia.pdf"
 page-background-opacity: 1
 titlepage-text-color: "FFFFFF"
 titlepage-rule-color: "360049"
 titlepage-rule-height: 0
-titlepage-background: "./rsrc/background-title-senia.pdf"
+titlepage-background: "../rsrc/background-title-senia.pdf"
 ---
 
 
