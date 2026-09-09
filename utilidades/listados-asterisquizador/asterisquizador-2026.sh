@@ -86,4 +86,6 @@ fecha=$(date +%Y%m%d%H%M)
 
 cd PDFS/ && pandoc -H ../rsrc/config-a4.tex -o ../$fecha-Listado.pdf *.md && cd ..
 
+echo "Tienes el PDF en : ../$fecha-Listado.pdf"
+
 exit 0
